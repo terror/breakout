@@ -1,3 +1,4 @@
 #!/bin/bash
 
-tsc --outDir src/dist src/main.ts
+tsc  --target es5 --lib dom,es6 --outDir src/dist src/main.ts 
+echo "Done!"
