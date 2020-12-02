@@ -7,3 +7,8 @@ export interface Position {
     x: number;
     y: number;
 }
+
+export interface Speed {
+    dx: number;
+    dy: number;
+}

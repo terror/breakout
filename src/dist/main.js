@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 document.addEventListener('DOMContentLoaded', function () {
     var size = {
-        width: 1000,
+        width: 10 << 7,
         height: 750,
     };
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     (canvas.width = size.width), (canvas.height = size.height);
-    /* --- Game state logic --- */
+    // --- Game state logic ---
     var Game = /** @class */ (function () {
         function Game(slider, ball, blocks) {
             this.slider = slider;
@@ -18,22 +18,44 @@ document.addEventListener('DOMContentLoaded', function () {
         Game.prototype.play = function () {
             this.slider.draw();
             this.ball.draw();
+            if (this.checkCollision(this.ball, this.slider)) {
+                this.ball.speed.dy = -this.ball.speed.dy;
+            }
             for (var i = 0; i < this.blocks.length; ++i) {
-                for (var j = 0; j < this.blocks.length; ++j) {
-                    this.blocks[i].draw();
+                this.blocks[i].draw();
+                if (this.checkCollision(this.ball, this.blocks[i])) {
+                    this.ball.speed.dy = -this.ball.speed.dy;
+                    (this.blocks[i].size.width = 0),
+                        (this.blocks[i].size.height = 0);
                 }
             }
+            this.filter();
+        };
+        Game.prototype.filter = function () {
+            this.blocks = this.blocks.filter(function (v) { return v.size.width !== 0; });
         };
         Game.prototype.update = function () {
             context.clearRect(0, 0, canvas.width, canvas.height);
             this.play();
+        };
+        Game.prototype.checkCollision = function (ball, obj) {
+            var dX = Math.abs(ball.pos.x - obj.pos.x - (obj.size.width >> 1)), dY = Math.abs(ball.pos.y - obj.pos.y - (obj.size.height >> 1));
+            if (dY > (obj.size.height >> 1) + ball.radius)
+                return false;
+            if (dX > (obj.size.width >> 1) + ball.radius)
+                return false;
+            if (dY <= obj.size.height >> 1)
+                return true;
+            if (dX <= obj.size.width >> 1)
+                return true;
+            return true;
         };
         return Game;
     }());
     var Slider = /** @class */ (function () {
         function Slider() {
             this.size = { width: 100, height: 10 };
-            this.pos = { x: canvas.width / 2, y: canvas.height - 20 };
+            this.pos = { x: canvas.width >> 1, y: canvas.height - 20 };
         }
         Slider.prototype.draw = function () {
             context.beginPath();
@@ -79,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
         Ball.prototype.draw = function () {
             this.checkBounds();
             context.beginPath();
-            context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            context.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI << 1);
             context.fill();
             context.closePath();
             this.pos.x += this.speed.dx;
@@ -88,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         Ball.prototype.checkBounds = function () {
             if (this.pos.x < 0 || this.pos.x > canvas.width)
                 this.speed.dx = -this.speed.dx;
-            if (this.pos.y < 0 || this.pos.y > canvas.height)
+            if (this.pos.y < 0)
                 this.speed.dy = -this.speed.dy;
         };
         return Ball;
@@ -101,10 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     var game = new Game(new Slider(), new Ball(), blocks);
-    /* --- Event Listeners --- */
+    // --- Event Listeners ---
     canvas.addEventListener('mousemove', function (e) {
         var x = e.clientX, y = e.clientY;
-        game.slider.pos.x = x - game.slider.size.width / 2;
+        console.log(x, y);
+        game.slider.pos.x = x - (game.slider.size.width >> 1);
         game.slider.pos.y = Math.min(Math.max(canvas.height - 20, y), canvas.height - 20);
     });
     // Begin game

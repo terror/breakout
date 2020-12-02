@@ -1,8 +1,8 @@
-import { Size, Position } from './interfaces';
+import { Size, Position, Speed } from './interfaces';
 
 document.addEventListener('DOMContentLoaded', () => {
     const size: Size = {
-        width: 1000,
+        width: 10 << 7,
         height: 750,
     };
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     (canvas.width = size.width), (canvas.height = size.height);
 
-    /* --- Game state logic --- */
+    // --- Game state logic ---
     class Game {
         public slider: Slider;
         private ball: Ball;
@@ -25,22 +25,52 @@ document.addEventListener('DOMContentLoaded', () => {
         play() {
             this.slider.draw();
             this.ball.draw();
+
+            if (this.checkCollision(this.ball, this.slider)) {
+                this.ball.speed.dy = -this.ball.speed.dy;
+            }
+
             for (let i = 0; i < this.blocks.length; ++i) {
-                for (let j = 0; j < this.blocks.length; ++j) {
-                    this.blocks[i].draw();
+                this.blocks[i].draw();
+                if (this.checkCollision(this.ball, this.blocks[i])) {
+                    this.ball.speed.dy = -this.ball.speed.dy;
+                    (this.blocks[i].size.width = 0),
+                        (this.blocks[i].size.height = 0);
                 }
             }
+            this.filter();
+        }
+
+        filter() {
+            this.blocks = this.blocks.filter((v: Block) => v.size.width !== 0);
         }
 
         update() {
             context.clearRect(0, 0, canvas.width, canvas.height);
             this.play();
         }
+
+        checkCollision(ball: Ball, obj: any) {
+            const dX: number = Math.abs(
+                    ball.pos.x - obj.pos.x - (obj.size.width >> 1)
+                ),
+                dY: number = Math.abs(
+                    ball.pos.y - obj.pos.y - (obj.size.height >> 1)
+                );
+
+            if (dY > (obj.size.height >> 1) + ball.radius) return false;
+            if (dX > (obj.size.width >> 1) + ball.radius) return false;
+
+            if (dY <= obj.size.height >> 1) return true;
+            if (dX <= obj.size.width >> 1) return true;
+
+            return true;
+        }
     }
 
     class Slider {
         public size: Size = { width: 100, height: 10 };
-        public pos: Position = { x: canvas.width / 2, y: canvas.height - 20 };
+        public pos: Position = { x: canvas.width >> 1, y: canvas.height - 20 };
 
         constructor() {}
 
@@ -60,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     class Block {
         public pos: Position = { x: 0, y: 0 };
-        private size: Size = { width: 100, height: 10 };
+        public size: Size = { width: 100, height: 10 };
         private colors: number[] = [
             Math.random() * 255,
             Math.random() * 255,
@@ -86,12 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     class Ball {
-        private radius: number = 10;
-        private pos: Position = {
+        public radius: number = 10;
+        public pos: Position = {
             x: 5,
             y: 5,
         };
-        private speed = {
+        public speed: Speed = {
             dx: 5,
             dy: 5,
         };
@@ -102,9 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
             this.checkBounds();
 
             context.beginPath();
-            context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+            context.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI << 1);
             context.fill();
             context.closePath();
+
             this.pos.x += this.speed.dx;
             this.pos.y += this.speed.dy;
         }
@@ -112,8 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkBounds() {
             if (this.pos.x < 0 || this.pos.x > canvas.width)
                 this.speed.dx = -this.speed.dx;
-            if (this.pos.y < 0 || this.pos.y > canvas.height)
-                this.speed.dy = -this.speed.dy;
+            if (this.pos.y < 0) this.speed.dy = -this.speed.dy;
         }
     }
 
@@ -127,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const game: Game = new Game(new Slider(), new Ball(), blocks);
 
-    /* --- Event Listeners --- */
+    // --- Event Listeners ---
     canvas.addEventListener('mousemove', (e) => {
         const x: number = e.clientX,
             y: number = e.clientY;
-        game.slider.pos.x = x - game.slider.size.width / 2;
+        game.slider.pos.x = x - (game.slider.size.width >> 1);
         game.slider.pos.y = Math.min(
             Math.max(canvas.height - 20, y),
             canvas.height - 20
