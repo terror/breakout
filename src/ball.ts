@@ -2,10 +2,12 @@ import { Position, Speed, canvas, context } from './common';
 
 class Ball {
     public radius: number = 10;
+
     public pos: Position = {
-        x: 5,
-        y: 5,
+        x: this.randX(),
+        y: this.randY(),
     };
+
     public speed: Speed = {
         dx: 5,
         dy: 5,
@@ -26,9 +28,25 @@ class Ball {
     }
 
     checkBounds() {
-        if (this.pos.x < 0 || this.pos.x > canvas.width)
+        if (
+            this.pos.x - this.radius < 0 ||
+            this.pos.x + this.radius > canvas.width
+        )
             this.speed.dx = -this.speed.dx;
-        if (this.pos.y < 0) this.speed.dy = -this.speed.dy;
+        if (this.pos.y - this.radius < 0) this.speed.dy = -this.speed.dy;
+    }
+
+    randX() {
+        return this.radius + Math.random() * (canvas.width - this.radius * 2);
+    }
+
+    randY() {
+        return this.radius + Math.random() * (canvas.height - this.radius * 2);
+    }
+
+    position() {
+        this.pos.x = this.randX();
+        this.pos.y = this.randY();
     }
 }
 

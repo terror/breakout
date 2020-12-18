@@ -1,7 +1,9 @@
-import { Block, Game, Slider, Ball, Size } from './common';
+import { Game, Slider, Ball, Size } from './common';
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+const score = document.getElementById('score') as HTMLCanvasElement;
+const lives = document.getElementById('lives') as HTMLCanvasElement;
 
 document.addEventListener('DOMContentLoaded', () => {
     const size: Size = {
@@ -22,15 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // Populate blocks array
-    let blocks: Block[] = [];
-    for (let i = 1; i <= 5; ++i) {
-        for (let j = 1; j <= 5; ++j) {
-            blocks.push(new Block((i * canvas.width) / 5, j * 30));
-        }
-    }
-
-    const game: Game = new Game(new Slider(), new Ball(), blocks);
+    const game: Game = new Game(new Slider(), new Ball());
 
     // Begin game
     game.play();
@@ -38,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const animate = () => {
         requestAnimationFrame(animate);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        game.update();
+        game.update(score, lives);
     };
 
     animate();
