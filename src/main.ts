@@ -1,15 +1,15 @@
-import { Game, Slider, Ball, Size } from './common';
+import { Game, Slider, Ball, Size, Sound } from './common';
 
-const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-const score = document.getElementById('score') as HTMLCanvasElement;
-const lives = document.getElementById('lives') as HTMLCanvasElement;
-const startBtn = document.getElementById('start') as HTMLCanvasElement;
-const gameContainer = document.getElementById('game') as HTMLCanvasElement;
-const startScreen = document.getElementById(
-    'start-screen'
-) as HTMLCanvasElement;
-const endScreen = document.getElementById('end-screen') as HTMLCanvasElement;
+/* UI Elements */
+const canvas = document.getElementById('canvas') as HTMLCanvasElement,
+    context = canvas.getContext('2d') as CanvasRenderingContext2D,
+    score = document.getElementById('score') as HTMLCanvasElement,
+    lives = document.getElementById('lives') as HTMLCanvasElement,
+    startBtn = document.getElementById('start') as HTMLCanvasElement,
+    gameContainer = document.getElementById('game') as HTMLCanvasElement,
+    startScreen = document.getElementById('start-screen') as HTMLCanvasElement,
+    endScreen = document.getElementById('end-screen') as HTMLCanvasElement,
+    endScore = document.getElementById('end-score') as HTMLCanvasElement;
 
 startBtn.addEventListener('click', () => {
     gameContainer.style.display = 'block';
@@ -33,7 +33,11 @@ startBtn.addEventListener('click', () => {
         );
     });
 
-    const game: Game = new Game(new Slider(), new Ball());
+    const game: Game = new Game(
+        new Slider(),
+        new Ball(),
+        new Sound('./sounds/hit.mp3')
+    );
     game.reset();
 
     // Begin game
@@ -48,4 +52,4 @@ startBtn.addEventListener('click', () => {
     animate();
 });
 
-export { canvas, context, endScreen, gameContainer };
+export { canvas, context, endScreen, gameContainer, endScore };

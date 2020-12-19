@@ -2,34 +2,38 @@ import {
     Slider,
     Ball,
     Block,
+    Sound,
     canvas,
     context,
     endScreen,
     gameContainer,
+    endScore,
 } from './common';
 
 class Game {
     public slider: Slider;
     private ball: Ball;
+    public sound: Sound;
     private blocks: Block[] = [];
     private score: number;
     private lives: number;
 
-    constructor(slider: Slider, ball: Ball) {
+    constructor(slider: Slider, ball: Ball, sound: Sound) {
         this.slider = slider;
         this.ball = ball;
+        this.sound = sound;
         this.score = 0;
         this.lives = 3;
         this.populateBlocks();
     }
 
-    async delay(ms: number) {
+    async delay(ms: number): Promise<void> {
         await new Promise((res: any) => setTimeout(() => res(), ms)).then(() =>
             console.log('hit!')
         );
     }
 
-    reset() {
+    reset(): void {
         this.lives = 3;
         this.score = 0;
         this.blocks.length = 0;
@@ -37,7 +41,7 @@ class Game {
     }
 
     // (Re)populates the array of block objects
-    populateBlocks() {
+    populateBlocks(): void {
         for (let i = 1; i <= 5; ++i) {
             for (let j = 1; j <= 5; ++j) {
                 this.blocks.push(new Block((i * canvas.width) / 6, j * 30));
@@ -45,7 +49,7 @@ class Game {
         }
     }
 
-    play() {
+    play(): void {
         this.slider.draw();
         this.ball.draw();
 
@@ -54,12 +58,14 @@ class Game {
             if (this.lives - 1 == 0) {
                 gameContainer.style.display = 'none';
                 endScreen.style.display = 'flex';
+                endScore.innerHTML = this.score.toString();
             }
             --this.lives;
             this.ball.position();
         }
 
         if (this.checkCollision(this.ball, this.slider)) {
+            this.sound.play();
             this.ball.speed.dy = -this.ball.speed.dy;
         }
 
@@ -68,6 +74,7 @@ class Game {
             if (this.checkCollision(this.ball, this.blocks[i])) {
                 this.ball.speed.dy = -this.ball.speed.dy;
                 this.delay(1000);
+                this.sound.play();
                 (this.blocks[i].size.width = 0),
                     (this.blocks[i].size.height = 0);
                 ++this.score;
@@ -77,11 +84,11 @@ class Game {
     }
 
     // Filters out blocks with widths equal to 0
-    filter() {
+    filter(): void {
         this.blocks = this.blocks.filter((v: Block) => v.size.width !== 0);
     }
 
-    update(score: HTMLCanvasElement, lives: HTMLCanvasElement) {
+    update(score: HTMLCanvasElement, lives: HTMLCanvasElement): void {
         context.clearRect(0, 0, canvas.width, canvas.height);
         score.innerHTML = this.score.toString();
         lives.innerHTML = this.lives.toString();
@@ -89,7 +96,7 @@ class Game {
     }
 
     // Checks for a collision with a (ball, object)
-    checkCollision(ball: Ball, obj: any) {
+    checkCollision(ball: Ball, obj: any): boolean {
         const dX: number = Math.abs(
                 ball.pos.x - obj.pos.x - (obj.size.width >> 1)
             ),
