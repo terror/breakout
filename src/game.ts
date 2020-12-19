@@ -1,4 +1,12 @@
-import { Slider, Ball, Block, canvas, context } from './common';
+import {
+    Slider,
+    Ball,
+    Block,
+    canvas,
+    context,
+    endScreen,
+    gameContainer,
+} from './common';
 
 class Game {
     public slider: Slider;
@@ -21,11 +29,18 @@ class Game {
         );
     }
 
+    reset() {
+        this.lives = 3;
+        this.score = 0;
+        this.blocks.length = 0;
+        this.populateBlocks();
+    }
+
     // (Re)populates the array of block objects
     populateBlocks() {
         for (let i = 1; i <= 5; ++i) {
             for (let j = 1; j <= 5; ++j) {
-                this.blocks.push(new Block((i * canvas.width) / 5, j * 30));
+                this.blocks.push(new Block((i * canvas.width) / 6, j * 30));
             }
         }
     }
@@ -35,12 +50,12 @@ class Game {
         this.ball.draw();
 
         if (this.ball.pos.y > canvas.height) {
+            // Game over
             if (this.lives - 1 == 0) {
-                // Game over
+                gameContainer.style.display = 'none';
+                endScreen.style.display = 'flex';
             }
             --this.lives;
-            this.blocks.length = 0;
-            this.populateBlocks();
             this.ball.position();
         }
 

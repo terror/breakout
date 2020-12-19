@@ -8,9 +8,42 @@
     </head>
     <body>
         <h3 id="header">Breakout</h3>
-        <h3>Score:<span id="score">0</span></h3>
-        <h3>Lives:<span id="lives">3</span></h3>
-        <canvas id="canvas"></canvas>
+
+        <div class="screen" id="start-screen">
+            <button class="btn" id="howto">How to play</button>
+            <p id="instructions" style="display: none">
+                The goal of the game is to remove all blocks from the screen.
+                Move your mouse left and right to move the slider.
+            </p>
+            <button class="btn" id="start">Start game</button>
+        </div>
+
+        <div class="screen" id="end-screen" style="display: none">
+            <h3>Game over</h3>
+            <button id="play-again">Play again</button>
+        </div>
+
+        <div id="game" style="display: none">
+            <h3>Score:<span id="score">0</span></h3>
+            <h3>Lives:<span id="lives">3</span></h3>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <!-- JS -->
         <script src="bundle.js"></script>
+        <script>
+            document
+                .getElementById('play-again')
+                .addEventListener('click', () => {
+                    document.getElementById('end-screen').style.display =
+                        'none';
+                    document.getElementById('start').click();
+                });
+            document.getElementById('howto').addEventListener('click', () => {
+                ins = document.getElementById('instructions');
+                if (ins.style.display == 'none') ins.style.display = 'block';
+                else ins.style.display = 'none';
+            });
+        </script>
     </body>
 </html>

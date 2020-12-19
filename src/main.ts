@@ -4,8 +4,17 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 const score = document.getElementById('score') as HTMLCanvasElement;
 const lives = document.getElementById('lives') as HTMLCanvasElement;
+const startBtn = document.getElementById('start') as HTMLCanvasElement;
+const gameContainer = document.getElementById('game') as HTMLCanvasElement;
+const startScreen = document.getElementById(
+    'start-screen'
+) as HTMLCanvasElement;
+const endScreen = document.getElementById('end-screen') as HTMLCanvasElement;
 
-document.addEventListener('DOMContentLoaded', () => {
+startBtn.addEventListener('click', () => {
+    gameContainer.style.display = 'block';
+    startScreen.style.display = 'none';
+
     const size: Size = {
         width: 10 << 7,
         height: 750,
@@ -25,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const game: Game = new Game(new Slider(), new Ball());
+    game.reset();
 
     // Begin game
     game.play();
@@ -38,4 +48,4 @@ document.addEventListener('DOMContentLoaded', () => {
     animate();
 });
 
-export { canvas, context };
+export { canvas, context, endScreen, gameContainer };
