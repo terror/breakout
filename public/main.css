@@ -5,15 +5,12 @@ canvas {
 h3 {
     font-family: 'Courier New', Courier, monospace;
     font-style: italic;
-    text-align: center;
 }
 
 .screen {
     display: flex;
-    justify-content: center;
     flex-direction: column;
     width: 25%;
-    margin: auto;
 }
 
 .btn {

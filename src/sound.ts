@@ -1,20 +1,20 @@
 class Sound {
-    private sound: HTMLAudioElement;
+    public sound: HTMLAudioElement;
 
-    constructor(src: any) {
+    constructor() {
         this.sound = document.createElement('audio');
-        this.sound.src = src;
         this.sound.setAttribute('preload', 'auto');
         this.sound.setAttribute('controls', 'none');
         this.sound.style.display = 'none';
         document.body.appendChild(this.sound);
     }
 
-    play() {
+    play(src: string): void {
+        this.sound.src = src;
         this.sound.play();
     }
 
-    pause() {
+    pause(): void {
         this.sound.pause();
     }
 }

@@ -22,7 +22,7 @@ class Block {
         this.pos.y = y;
     }
 
-    draw() {
+    draw(): void {
         context.beginPath();
         context.fillStyle = `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`;
         context.fillRect(

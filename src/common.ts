@@ -3,8 +3,15 @@ import Ball from './ball';
 import Block from './block';
 import Game from './game';
 import Sound from './sound';
-import { canvas, context, endScreen, gameContainer, endScore } from './main';
-import { Position, Size, Speed } from './interfaces';
+import {
+    canvas,
+    context,
+    endScreen,
+    gameContainer,
+    endScore,
+    endScreenMessage,
+} from './main';
+import { Position, Size, Speed, Sounds } from './interfaces';
 
 export {
     Slider,
@@ -20,4 +27,6 @@ export {
     endScreen,
     gameContainer,
     endScore,
+    endScreenMessage,
+    Sounds,
 };

@@ -12,3 +12,10 @@ export interface Speed {
     dx: number;
     dy: number;
 }
+
+export interface Sounds {
+    winSound: string;
+    lostSound: string;
+    endSound: string;
+    hitSound: string;
+}

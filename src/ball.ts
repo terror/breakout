@@ -15,7 +15,7 @@ class Ball {
 
     constructor() {}
 
-    draw() {
+    draw(): void {
         this.checkBounds();
 
         context.beginPath();
@@ -27,7 +27,7 @@ class Ball {
         this.pos.y += this.speed.dy;
     }
 
-    checkBounds() {
+    checkBounds(): void {
         if (
             this.pos.x - this.radius < 0 ||
             this.pos.x + this.radius > canvas.width
@@ -36,15 +36,15 @@ class Ball {
         if (this.pos.y - this.radius < 0) this.speed.dy = -this.speed.dy;
     }
 
-    randX() {
+    randX(): number {
         return this.radius + Math.random() * (canvas.width - this.radius * 2);
     }
 
-    randY() {
+    randY(): number {
         return this.radius + Math.random() * (canvas.height - this.radius * 2);
     }
 
-    position() {
+    position(): void {
         this.pos.x = this.randX();
         this.pos.y = this.randY();
     }

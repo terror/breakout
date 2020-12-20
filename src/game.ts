@@ -3,20 +3,29 @@ import {
     Ball,
     Block,
     Sound,
+    Sounds,
     canvas,
     context,
     endScreen,
     gameContainer,
     endScore,
+    endScreenMessage,
 } from './common';
 
 class Game {
     public slider: Slider;
+    public gameOver: boolean;
     private ball: Ball;
     public sound: Sound;
     private blocks: Block[] = [];
     private score: number;
     private lives: number;
+    private sounds: Sounds = {
+        endSound: './sounds/fail.mp3',
+        hitSound: './sounds/hit.mp3',
+        winSound: './sounds/complete.mp3',
+        lostSound: './sounds/lost.mp3',
+    };
 
     constructor(slider: Slider, ball: Ball, sound: Sound) {
         this.slider = slider;
@@ -24,18 +33,22 @@ class Game {
         this.sound = sound;
         this.score = 0;
         this.lives = 3;
+        this.gameOver = false;
         this.populateBlocks();
     }
 
+    // Simulate a delay for ball hit
     async delay(ms: number): Promise<void> {
         await new Promise((res: any) => setTimeout(() => res(), ms)).then(() =>
             console.log('hit!')
         );
     }
 
+    // Reset all game stats
     reset(): void {
         this.lives = 3;
         this.score = 0;
+        this.gameOver = false;
         this.blocks.length = 0;
         this.populateBlocks();
     }
@@ -49,9 +62,20 @@ class Game {
         }
     }
 
+    // Game loop
     play(): void {
         this.slider.draw();
         this.ball.draw();
+
+        if (this.blocks.length == 0) {
+            // Game won
+            this.gameOver = true;
+            this.sound.play(this.sounds['winSound']);
+            gameContainer.style.display = 'none';
+            endScreen.style.display = 'flex';
+            endScore.innerHTML = this.score.toString();
+            endScreenMessage.innerHTML = 'You Win!';
+        }
 
         if (this.ball.pos.y > canvas.height) {
             // Game over
@@ -59,13 +83,17 @@ class Game {
                 gameContainer.style.display = 'none';
                 endScreen.style.display = 'flex';
                 endScore.innerHTML = this.score.toString();
+                this.sound.play(this.sounds['endSound']);
+                this.gameOver = true;
+                return;
             }
+            this.sound.play(this.sounds['lostSound']);
             --this.lives;
             this.ball.position();
         }
 
         if (this.checkCollision(this.ball, this.slider)) {
-            this.sound.play();
+            this.sound.play(this.sounds['hitSound']);
             this.ball.speed.dy = -this.ball.speed.dy;
         }
 
@@ -74,7 +102,7 @@ class Game {
             if (this.checkCollision(this.ball, this.blocks[i])) {
                 this.ball.speed.dy = -this.ball.speed.dy;
                 this.delay(1000);
-                this.sound.play();
+                this.sound.play(this.sounds['hitSound']);
                 (this.blocks[i].size.width = 0),
                     (this.blocks[i].size.height = 0);
                 ++this.score;
@@ -88,6 +116,7 @@ class Game {
         this.blocks = this.blocks.filter((v: Block) => v.size.width !== 0);
     }
 
+    // Relfect score and lives stats to DOM
     update(score: HTMLCanvasElement, lives: HTMLCanvasElement): void {
         context.clearRect(0, 0, canvas.width, canvas.height);
         score.innerHTML = this.score.toString();
