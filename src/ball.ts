@@ -4,14 +4,16 @@ class Ball {
     public radius: number = 10;
 
     public pos: Position = {
-        x: this.randX(),
-        y: this.randY(),
+        x: canvas.width >> 1,
+        y: canvas.height >> 1,
     };
 
     public speed: Speed = {
         dx: 5,
         dy: 5,
     };
+
+    public colors: number[] = [];
 
     constructor() {}
 
@@ -20,6 +22,7 @@ class Ball {
 
         context.beginPath();
         context.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI << 1);
+        context.fillStyle = `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`;
         context.fill();
         context.closePath();
 
@@ -36,17 +39,9 @@ class Ball {
         if (this.pos.y - this.radius < 0) this.speed.dy = -this.speed.dy;
     }
 
-    randX(): number {
-        return this.radius + Math.random() * (canvas.width - this.radius * 2);
-    }
-
-    randY(): number {
-        return this.radius + Math.random() * (canvas.height - this.radius * 2);
-    }
-
-    position(): void {
-        this.pos.x = this.randX();
-        this.pos.y = this.randY();
+    position(colors: number[]): void {
+        (this.pos.x = canvas.width >> 1), (this.pos.y = canvas.height >> 1);
+        this.colors = colors;
     }
 }
 

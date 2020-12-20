@@ -11,7 +11,7 @@ class Block {
         height: 10,
     };
 
-    private colors: number[] = [
+    public colors: number[] = [
         Math.random() * 255,
         Math.random() * 255,
         Math.random() * 255,

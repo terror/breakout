@@ -18,4 +18,5 @@ export interface Sounds {
     lostSound: string;
     endSound: string;
     hitSound: string;
+    bonusSound: string;
 }

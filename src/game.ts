@@ -15,26 +15,28 @@ import {
 class Game {
     public slider: Slider;
     public gameOver: boolean;
-    private ball: Ball;
     public sound: Sound;
+
+    private ball: Ball;
     private blocks: Block[] = [];
     private score: number;
     private lives: number;
+
     private sounds: Sounds = {
         endSound: './sounds/fail.mp3',
         hitSound: './sounds/hit.mp3',
         winSound: './sounds/complete.mp3',
         lostSound: './sounds/lost.mp3',
+        bonusSound: './sounds/bonus.mp3',
     };
 
     constructor(slider: Slider, ball: Ball, sound: Sound) {
-        this.slider = slider;
-        this.ball = ball;
+        (this.slider = slider), (this.ball = ball), (this.sound = sound);
+        (this.score = 0), (this.lives = 3), (this.gameOver = false);
         this.sound = sound;
-        this.score = 0;
-        this.lives = 3;
         this.gameOver = false;
         this.populateBlocks();
+        this.ball.position(this.randomBlockColor());
     }
 
     // Simulate a delay for ball hit
@@ -75,6 +77,7 @@ class Game {
             endScreen.style.display = 'flex';
             endScore.innerHTML = this.score.toString();
             endScreenMessage.innerHTML = 'You Win!';
+            return;
         }
 
         if (this.ball.pos.y > canvas.height) {
@@ -87,9 +90,10 @@ class Game {
                 this.gameOver = true;
                 return;
             }
+
             this.sound.play(this.sounds['lostSound']);
             --this.lives;
-            this.ball.position();
+            this.ball.position(this.randomBlockColor());
         }
 
         if (this.checkCollision(this.ball, this.slider)) {
@@ -99,10 +103,16 @@ class Game {
 
         for (let i = 0; i < this.blocks.length; ++i) {
             this.blocks[i].draw();
+            let bonus: boolean = false;
             if (this.checkCollision(this.ball, this.blocks[i])) {
-                this.ball.speed.dy = -this.ball.speed.dy;
-                this.delay(1000);
-                this.sound.play(this.sounds['hitSound']);
+                if (this.checkColors(this.ball, this.blocks[i])) {
+                    this.sound.play(this.sounds['bonusSound']);
+                    (this.lives += 1), (this.score += 5);
+                    bonus = true;
+                }
+                (this.ball.speed.dy = -this.ball.speed.dy), this.delay(1000);
+                if(!bonus) 
+                    this.sound.play(this.sounds['hitSound']);
                 (this.blocks[i].size.width = 0),
                     (this.blocks[i].size.height = 0);
                 ++this.score;
@@ -140,6 +150,24 @@ class Game {
         if (dX <= obj.size.width >> 1) return true;
 
         return true;
+    }
+
+    // Checks for same color between a (ball, block)
+    checkColors(ball: Ball, block: Block): boolean {
+        return (
+            ball.colors[0] == block.colors[0] &&
+            ball.colors[1] == block.colors[1] &&
+            ball.colors[2] == block.colors[2]
+        );
+    }
+
+    // Get random color from array of blocks
+    randomBlockColor(): number[] {
+        let colors: number[][] = [];
+        for (let i = 0; i < this.blocks.length; ++i) {
+            colors.push(this.blocks[i].colors);
+        }
+        return colors[Math.floor(Math.random() * colors.length)];
     }
 }
 
