@@ -58,9 +58,8 @@ class Game {
     // (Re)populates the array of block objects
     populateBlocks(): void {
         for (let i = 1; i <= 5; ++i) {
-            for (let j = 1; j <= 5; ++j) {
+            for (let j = 1; j <= 5; ++j)
                 this.blocks.push(new Block((i * canvas.width) / 6, j * 30));
-            }
         }
     }
 
@@ -111,8 +110,7 @@ class Game {
                     bonus = true;
                 }
                 (this.ball.speed.dy = -this.ball.speed.dy), this.delay(1000);
-                if(!bonus) 
-                    this.sound.play(this.sounds['hitSound']);
+                if (!bonus) this.sound.play(this.sounds['hitSound']);
                 (this.blocks[i].size.width = 0),
                     (this.blocks[i].size.height = 0);
                 ++this.score;

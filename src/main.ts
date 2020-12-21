@@ -10,9 +10,7 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement,
     startScreen = document.getElementById('start-screen') as HTMLCanvasElement,
     endScreen = document.getElementById('end-screen') as HTMLCanvasElement,
     endScore = document.getElementById('end-score') as HTMLCanvasElement,
-    endScreenMessage = document.getElementById(
-        'end-screen-msg'
-    ) as HTMLCanvasElement;
+    endScreenMessage = document.getElementById('end-screen-msg') as HTMLCanvasElement;
 
 startBtn.addEventListener('click', (): void => {
     gameContainer.style.display = 'block';

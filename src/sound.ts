@@ -13,10 +13,6 @@ class Sound {
         this.sound.src = src;
         this.sound.play();
     }
-
-    pause(): void {
-        this.sound.pause();
-    }
 }
 
 export default Sound;
