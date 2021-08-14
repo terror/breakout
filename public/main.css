@@ -1,21 +1,21 @@
 canvas {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 h3 {
-    font-family: 'Courier New', Courier, monospace;
-    font-style: italic;
-    margin-left: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-style: italic;
+  margin-left: 1rem;
 }
 
 .screen {
-    display: flex;
-    flex-direction: column;
-    width: 25%;
-    margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  margin-left: 1rem;
 }
 
 .btn {
-    margin-top: 1rem;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-top: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
